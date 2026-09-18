@@ -1,0 +1,84 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to the inverter",
+        "description": "Enter the IP address of the inverter's web interface.",
+        "data": {
+          "host": "IP address"
+        },
+        "data_description": {
+          "host": "For example 192.168.1.100. Only plain HTTP is supported."
+        }
+      },
+      "reconfigure": {
+        "title": "Change the inverter's address",
+        "data": {
+          "host": "IP address"
+        },
+        "data_description": {
+          "host": "The new IP address of the same inverter."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Could not reach the inverter. If it is dark outside it has probably powered down; try again in daylight.",
+      "invalid_device": "That address answered but returned no readable serial number, so it does not look like a Solar Frontier inverter."
+    },
+    "abort": {
+      "already_configured": "This inverter is already configured.",
+      "wrong_inverter": "That address belongs to a different inverter than the one being reconfigured.",
+      "reconfigure_successful": "The address was updated."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Polling interval",
+        "data": {
+          "scan_interval": "Measurement interval"
+        },
+        "data_description": {
+          "scan_interval": "How often to read live measurements and operating state. The inverter is slow and handles one request at a time, so 30 seconds is recommended."
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "ac_power": {
+        "name": "AC power"
+      },
+      "ac_voltage": {
+        "name": "AC voltage"
+      },
+      "ac_current": {
+        "name": "AC current"
+      },
+      "ac_frequency": {
+        "name": "AC frequency"
+      },
+      "dc_power": {
+        "name": "DC power"
+      },
+      "dc_voltage": {
+        "name": "DC voltage"
+      },
+      "dc_current": {
+        "name": "DC current"
+      },
+      "operating_state": {
+        "name": "Operating state"
+      },
+      "energy_total": {
+        "name": "Energy total"
+      },
+      "last_event": {
+        "name": "Last event"
+      },
+      "inverter_clock": {
+        "name": "Clock"
+      }
+    }
+  }
+}

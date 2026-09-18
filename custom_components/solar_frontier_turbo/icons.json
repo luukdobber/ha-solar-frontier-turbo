@@ -1,0 +1,15 @@
+{
+  "entity": {
+    "sensor": {
+      "operating_state": {
+        "default": "mdi:state-machine"
+      },
+      "last_event": {
+        "default": "mdi:alert-circle-outline"
+      },
+      "inverter_clock": {
+        "default": "mdi:clock-outline"
+      }
+    }
+  }
+}

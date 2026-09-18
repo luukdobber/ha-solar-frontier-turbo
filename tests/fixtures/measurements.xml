@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<root>
+  <Device
+    Name='Turbo 1P'
+    Type='Inverter'
+    Serial='123456AB000000000001'
+    BusAddress='1'
+    NetBiosName='INV000000000001'
+    IpAddress='192.0.2.10'
+    DateTime='2024-05-05T12:30:00'>
+    <Measurements>
+      <Measurement Value='230.100' Unit='V' Type='AC_Voltage'/>
+      <Measurement Value='1.500' Unit='A' Type='AC_Current'/>
+      <Measurement Value='342.000' Unit='W' Type='AC_Power'/>
+      <Measurement Value='50.020' Unit='Hz' Type='AC_Frequency'/>
+      <Measurement Value='350.500' Unit='V' Type='DC_Voltage'/>
+      <Measurement Value='1.020' Unit='A' Type='DC_Current'/>
+      <Measurement Value='357.510' Unit='W' Type='DC_Power'/>
+      <Measurement Value='31.400' Unit='&#176;C' Type='Temp'/>
+    </Measurements>
+  </Device>
+</root>

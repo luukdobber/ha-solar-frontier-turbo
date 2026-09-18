@@ -1,0 +1,21 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+
+# Virtual environment
+.venv/
+
+# Tool caches
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+
+# Coverage output
+.coverage
+htmlcov/
+
+# Local Home Assistant instance used for manual testing
+/.dev/
+
+# macOS
+.DS_Store

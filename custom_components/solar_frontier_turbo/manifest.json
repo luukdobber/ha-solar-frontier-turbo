@@ -1,0 +1,14 @@
+{
+  "domain": "solar_frontier_turbo",
+  "name": "Solar Frontier Turbo",
+  "codeowners": ["@luukdobber"],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/luukdobber/ha-solar-frontier-turbo",
+  "integration_type": "device",
+  "iot_class": "local_polling",
+  "issue_tracker": "https://github.com/luukdobber/ha-solar-frontier-turbo/issues",
+  "loggers": ["custom_components.solar_frontier_turbo"],
+  "requirements": [],
+  "version": "0.1.0"
+}

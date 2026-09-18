@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<root>
+  <Device
+    Name='Turbo 1P'
+    Type='Inverter'
+    Serial='123456AB000000000001'
+    BusAddress='1'
+    NetBiosName='INV000000000001'
+    IpAddress='192.0.2.10'
+    DateTime='2024-05-05T21:15:00'>
+    <Measurements>
+      <Measurement Value='231.200' Unit='V' Type='AC_Voltage'/>
+      <Measurement Value='49.980' Unit='Hz' Type='AC_Frequency'/>
+      <Measurement Value='205.600' Unit='V' Type='DC_Voltage'/>
+    </Measurements>
+    <Events>
+      <Event Message='Grid voltage high' Severity='Warning' Type='User' Start='2024-05-04T11:12:13' End='2024-05-04T11:12:14'/>
+      <Event Message='Grid frequency low' Severity='Warning' Type='User' Start='2024-05-03T08:09:10' End='2024-05-03T08:09:11'/>
+      <Event Message='Insulation resistance low' Severity='Warning' Type='User' Start='2024-05-01T06:07:08' End='2024-05-01T06:07:09'/>
+    </Events>
+    <Yields></Yields>
+    <Versions>
+      <Software Device='HMI' Name='BFAPI' Version='2.5.4'/>
+      <Software Device='HMI' Name='APP' Version='1.45.0'/>
+      <Software Device='HMI' Name='OEM Turbo 1P' Version='1.0.1'/>
+      <Software Device='PU' Name='APP' Version='5.5.0'/>
+      <Hardware Device='HMI' Version='2'/>
+      <Hardware Device='PU' Version='3'/>
+    </Versions>
+    <State Value='Standby'/>
+  </Device>
+</root>
