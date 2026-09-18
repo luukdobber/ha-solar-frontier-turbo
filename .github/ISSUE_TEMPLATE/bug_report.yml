@@ -1,0 +1,70 @@
+name: Bug report
+description: Something is not working as described
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before filing: if every entity is unavailable and it is dark outside, that is
+        expected. The inverter is powered from the solar array and shuts down after
+        sunset.
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What you expected, and what happened instead.
+    validations:
+      required: true
+
+  - type: input
+    id: integration-version
+    attributes:
+      label: Integration version
+      placeholder: "0.1.0"
+    validations:
+      required: true
+
+  - type: input
+    id: ha-version
+    attributes:
+      label: Home Assistant version
+      placeholder: "2026.9.2"
+    validations:
+      required: true
+
+  - type: input
+    id: model
+    attributes:
+      label: Inverter model
+      description: As shown on the device page, for example Turbo 1P.
+    validations:
+      required: true
+
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Diagnostics
+      description: |
+        Device page → three-dot menu → Download diagnostics, then attach it here.
+        The serial number and addresses are redacted for you. This contains the
+        measurement set, resolved AC power and firmware inventory, which answers
+        most questions immediately.
+    validations:
+      required: false
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Debug log
+      description: |
+        Add this to `configuration.yaml`, restart, reproduce, then paste the log.
+
+        ```yaml
+        logger:
+          logs:
+            custom_components.solar_frontier_turbo: debug
+        ```
+      render: text
+    validations:
+      required: false
