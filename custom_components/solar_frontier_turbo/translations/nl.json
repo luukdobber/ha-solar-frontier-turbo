@@ -1,0 +1,84 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Verbinding maken met de omvormer",
+        "description": "Voer het IP-adres van de webinterface van de omvormer in.",
+        "data": {
+          "host": "IP-adres"
+        },
+        "data_description": {
+          "host": "Bijvoorbeeld 192.168.1.100. Alleen gewone HTTP wordt ondersteund."
+        }
+      },
+      "reconfigure": {
+        "title": "Adres van de omvormer wijzigen",
+        "data": {
+          "host": "IP-adres"
+        },
+        "data_description": {
+          "host": "Het nieuwe IP-adres van dezelfde omvormer."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Kan de omvormer niet bereiken. Als het buiten donker is, is hij waarschijnlijk uitgeschakeld; probeer het opnieuw bij daglicht.",
+      "invalid_device": "Dat adres antwoordde wel, maar gaf geen leesbaar serienummer terug. Het lijkt dus niet om een Solar Frontier-omvormer te gaan."
+    },
+    "abort": {
+      "already_configured": "Deze omvormer is al geconfigureerd.",
+      "wrong_inverter": "Dat adres hoort bij een andere omvormer dan degene die opnieuw wordt geconfigureerd.",
+      "reconfigure_successful": "Het adres is bijgewerkt."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Uitleesinterval",
+        "data": {
+          "scan_interval": "Meetinterval"
+        },
+        "data_description": {
+          "scan_interval": "Hoe vaak live metingen en de bedrijfstoestand worden uitgelezen. De omvormer is langzaam en verwerkt één verzoek tegelijk, dus 30 seconden is aanbevolen."
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "ac_power": {
+        "name": "AC-vermogen"
+      },
+      "ac_voltage": {
+        "name": "AC-spanning"
+      },
+      "ac_current": {
+        "name": "AC-stroom"
+      },
+      "ac_frequency": {
+        "name": "AC-frequentie"
+      },
+      "dc_power": {
+        "name": "DC-vermogen"
+      },
+      "dc_voltage": {
+        "name": "DC-spanning"
+      },
+      "dc_current": {
+        "name": "DC-stroom"
+      },
+      "operating_state": {
+        "name": "Bedrijfstoestand"
+      },
+      "energy_total": {
+        "name": "Totale opbrengst"
+      },
+      "last_event": {
+        "name": "Laatste gebeurtenis"
+      },
+      "inverter_clock": {
+        "name": "Klok"
+      }
+    }
+  }
+}
