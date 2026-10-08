@@ -16,6 +16,7 @@ from homeassistant.helpers.selector import (
     TextSelectorConfig,
     TextSelectorType,
 )
+from homeassistant.helpers.service_info.dhcp import DhcpServiceInfo
 import voluptuous as vol
 
 from .client import SolarFrontierClient
@@ -55,6 +56,8 @@ class SolarFrontierTurboConfigFlow(ConfigFlow, domain=DOMAIN):
 
     VERSION = 1
 
+    _discovered_host: str
+
     async def _async_read_serial(self, host: str) -> str:
         """Confirm the host is an inverter and return its serial number."""
         client = SolarFrontierClient(async_get_clientsession(self.hass), host)
@@ -88,6 +91,43 @@ class SolarFrontierTurboConfigFlow(ConfigFlow, domain=DOMAIN):
                 STEP_USER_SCHEMA, user_input
             ),
             errors=errors,
+        )
+
+    async def async_step_dhcp(
+        self, discovery_info: DhcpServiceInfo
+    ) -> ConfigFlowResult:
+        """Handle an inverter seen requesting a DHCP lease.
+
+        The hostname and MAC only narrow the field, so the device is confirmed by
+        reading its XML. Anything that does not answer with a serial is silently
+        dropped rather than shown to the user.
+        """
+        host = discovery_info.ip
+        try:
+            serial = await self._async_read_serial(host)
+        except SolarFrontierError as err:
+            LOGGER.debug("Ignoring DHCP discovery of %s: %s", host, err)
+            return self.async_abort(reason="not_an_inverter")
+
+        await self.async_set_unique_id(serial)
+        self._abort_if_unique_id_configured(updates={CONF_HOST: host})
+
+        self._discovered_host = host
+        self.context["title_placeholders"] = {"host": host}
+        return await self.async_step_discovery_confirm()
+
+    async def async_step_discovery_confirm(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
+        """Ask before adding an inverter that was discovered."""
+        host = self._discovered_host
+        if user_input is not None:
+            return self.async_create_entry(title=host, data={CONF_HOST: host})
+
+        self._set_confirm_only()
+        return self.async_show_form(
+            step_id="discovery_confirm",
+            description_placeholders={"host": host},
         )
 
     async def async_step_reconfigure(

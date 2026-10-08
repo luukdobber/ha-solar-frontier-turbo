@@ -11,6 +11,10 @@
           "host": "For example 192.168.1.100. Only plain HTTP is supported."
         }
       },
+      "discovery_confirm": {
+        "title": "Inverter found",
+        "description": "Set up the Solar Frontier inverter at {host}?"
+      },
       "reconfigure": {
         "title": "Change the inverter's address",
         "data": {
@@ -26,6 +30,7 @@
       "invalid_device": "That address answered but returned no readable serial number, so it does not look like a Solar Frontier inverter."
     },
     "abort": {
+      "not_an_inverter": "That device did not return readable inverter data, so it was ignored.",
       "already_configured": "This inverter is already configured.",
       "wrong_inverter": "That address belongs to a different inverter than the one being reconfigured.",
       "reconfigure_successful": "The address was updated."

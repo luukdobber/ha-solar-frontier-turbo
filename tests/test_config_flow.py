@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+from fnmatch import fnmatch
+import json
+from pathlib import Path
 from typing import Any
 from unittest.mock import AsyncMock
 
@@ -9,6 +12,7 @@ from homeassistant import config_entries
 from homeassistant.const import CONF_HOST
 from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResultType
+from homeassistant.helpers.service_info.dhcp import DhcpServiceInfo
 import pytest
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
@@ -284,3 +288,116 @@ async def test_options_flow_accepts_the_allowed_range(
     await hass.async_block_till_done()
 
     assert result["type"] is FlowResultType.CREATE_ENTRY
+
+
+def _dhcp_info(host: str = HOST) -> DhcpServiceInfo:
+    return DhcpServiceInfo(
+        ip=host, hostname="inv005717320053", macaddress="fcc23d1625f1"
+    )
+
+
+async def _start_dhcp(hass: HomeAssistant, host: str = HOST) -> dict[str, Any]:
+    return await hass.config_entries.flow.async_init(
+        DOMAIN,
+        context={"source": config_entries.SOURCE_DHCP},
+        data=_dhcp_info(host),
+    )
+
+
+async def test_dhcp_discovery_asks_for_confirmation(
+    hass: HomeAssistant, fake_device: FakeDevice, mock_setup_entry: AsyncMock
+) -> None:
+    """A discovered inverter is confirmed by the user, not added silently."""
+    result = await _start_dhcp(hass)
+
+    assert result["type"] is FlowResultType.FORM
+    assert result["step_id"] == "discovery_confirm"
+    assert result["description_placeholders"] == {"host": HOST}
+
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], {})
+
+    assert result["type"] is FlowResultType.CREATE_ENTRY
+    assert result["data"] == {CONF_HOST: HOST}
+    assert result["result"].unique_id == SERIAL
+
+
+async def test_dhcp_discovery_of_something_else_is_dropped(
+    hass: HomeAssistant, fake_device: FakeDevice, mock_setup_entry: AsyncMock
+) -> None:
+    """The hostname and MAC only narrow the field; the XML is what decides."""
+    fake_device.set(
+        "measurements.xml",
+        "<?xml version='1.0'?><root><Device Name='Something'></Device></root>",
+    )
+
+    result = await _start_dhcp(hass)
+
+    assert result["type"] is FlowResultType.ABORT
+    assert result["reason"] == "not_an_inverter"
+
+
+async def test_dhcp_discovery_of_an_unreachable_host_is_dropped(
+    hass: HomeAssistant, fake_device: FakeDevice, mock_setup_entry: AsyncMock
+) -> None:
+    """Nothing is shown for a device that does not answer at all."""
+    fake_device.offline = True
+
+    result = await _start_dhcp(hass)
+
+    assert result["type"] is FlowResultType.ABORT
+    assert result["reason"] == "not_an_inverter"
+
+
+async def test_dhcp_discovery_updates_the_host_of_a_known_inverter(
+    hass: HomeAssistant, fake_device: FakeDevice, mock_setup_entry: AsyncMock
+) -> None:
+    """A new lease for a configured inverter should correct its address."""
+    entry = MockConfigEntry(
+        domain=DOMAIN, data={CONF_HOST: "192.0.2.99"}, unique_id=SERIAL
+    )
+    entry.add_to_hass(hass)
+
+    result = await _start_dhcp(hass)
+
+    assert result["type"] is FlowResultType.ABORT
+    assert result["reason"] == "already_configured"
+    assert entry.data[CONF_HOST] == HOST
+
+
+@pytest.mark.parametrize(
+    ("hostname", "macaddress", "should_match"),
+    [
+        ("inv005717320053", "FCC23D1625F1", True),
+        ("inv004700500044", "FCC23D000001", True),
+        ("inv006567030026", "FCC23DAABBCC", True),
+        # Right hostname shape, but some other manufacturer's network chip.
+        ("inv005717320053", "001132AABBCC", False),
+        # An Atmel chip is common, so the hostname has to carry its weight.
+        ("inverter-shelly", "FCC23D1625F1", False),
+        ("invoiceserver01", "FCC23D1625F1", False),
+        ("inv-pc", "FCC23D1625F1", False),
+        ("inv00571732005", "FCC23D1625F1", False),
+        ("inv0057173200531", "FCC23D1625F1", False),
+    ],
+)
+def test_dhcp_matcher_is_specific_enough(
+    hostname: str, macaddress: str, should_match: bool
+) -> None:
+    """The manifest must not invite discovery flows from unrelated devices.
+
+    Home Assistant lowercases the hostname and uppercases the MAC, then applies
+    every key in the matcher with fnmatch, so both have to pass.
+    """
+    manifest = json.loads(
+        (
+            Path(__file__).parent.parent
+            / "custom_components/solar_frontier_turbo/manifest.json"
+        ).read_text()
+    )
+    matcher = manifest["dhcp"][0]
+
+    matched = fnmatch(hostname.lower(), matcher["hostname"]) and fnmatch(
+        macaddress.upper(), matcher["macaddress"]
+    )
+
+    assert matched is should_match
