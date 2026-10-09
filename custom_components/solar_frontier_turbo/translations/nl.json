@@ -11,6 +11,10 @@
           "host": "Bijvoorbeeld 192.168.1.100. Alleen gewone HTTP wordt ondersteund."
         }
       },
+      "discovery_confirm": {
+        "title": "Omvormer gevonden",
+        "description": "De Solar Frontier-omvormer op {host} instellen?"
+      },
       "reconfigure": {
         "title": "Adres van de omvormer wijzigen",
         "data": {
@@ -26,6 +30,7 @@
       "invalid_device": "Dat adres antwoordde wel, maar gaf geen leesbaar serienummer terug. Het lijkt dus niet om een Solar Frontier-omvormer te gaan."
     },
     "abort": {
+      "not_an_inverter": "Dat apparaat gaf geen leesbare omvormergegevens terug en is genegeerd.",
       "already_configured": "Deze omvormer is al geconfigureerd.",
       "wrong_inverter": "Dat adres hoort bij een andere omvormer dan degene die opnieuw wordt geconfigureerd.",
       "reconfigure_successful": "Het adres is bijgewerkt."

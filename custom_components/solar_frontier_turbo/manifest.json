@@ -4,6 +4,12 @@
   "codeowners": ["@luukdobber"],
   "config_flow": true,
   "dependencies": [],
+  "dhcp": [
+    {
+      "hostname": "inv[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]",
+      "macaddress": "FCC23D*"
+    }
+  ],
   "documentation": "https://github.com/luukdobber/ha-solar-frontier-turbo",
   "integration_type": "device",
   "iot_class": "local_polling",

@@ -38,10 +38,16 @@ than scraping HTML.
 
 ### Configuration
 
-The setup dialog asks for one thing: the inverter's IP address (for example
-`192.168.1.100`). The address is validated by reading `measurements.xml` and
+Home Assistant may find the inverter by itself. The device requests a DHCP lease
+every morning when the array wakes it, under a hostname derived from its serial, so
+it usually turns up as a discovered device without you doing anything. Confirm it
+and you are done.
+
+Otherwise the setup dialog asks for one thing: the inverter's IP address (for
+example `192.168.1.100`). The address is validated by reading `measurements.xml` and
 requiring a parseable serial number, which is then used as the config entry's
-unique ID.
+unique ID. A discovered device is checked the same way, so anything that does not
+answer with a serial number is ignored rather than offered to you.
 
 Add the integration in daylight. The inverter is powered from the solar array and
 does not answer after sunset, so setup cannot read its serial number then; see
@@ -176,7 +182,9 @@ download there too and restart.
   deliberately does not, because feedback is a 128×64 bitmap, the menu is globally
   stateful, and one of the buttons opens the service menu where grid-protection
   parameters live.
-- The IP address must be entered by hand. Give the inverter a static lease.
+- Discovery relies on watching DHCP, because the inverter advertises nothing over
+  mDNS or SSDP. If Home Assistant cannot see its DHCP traffic, enter the address by
+  hand. Either way, give the inverter a static lease so the address does not move.
 - The energy total starts from zero when you add the integration. The inverter's own
   day, month and lifetime totals live behind its web interface, which this
   integration does not read, so none of that history is imported.
