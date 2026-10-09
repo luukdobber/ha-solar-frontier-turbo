@@ -294,11 +294,6 @@ class SolarFrontierSensor(SolarFrontierEntity, SensorEntity):
         return self.entity_description.value_fn(poll)
 
     @property
-    def available(self) -> bool:
-        """Unavailable rather than unknown when there is no value to report."""
-        return super().available and self.native_value is not None
-
-    @property
     def extra_state_attributes(self) -> dict[str, Any] | None:
         """Extra detail for the described value."""
         if (poll := self.poll) is None or self.entity_description.attributes_fn is None:

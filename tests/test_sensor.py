@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from datetime import timedelta
+import re
 
 from freezegun.api import FrozenDateTimeFactory
 from homeassistant.components.sensor import ATTR_STATE_CLASS, SensorStateClass
@@ -10,6 +11,7 @@ from homeassistant.const import (
     ATTR_DEVICE_CLASS,
     ATTR_UNIT_OF_MEASUREMENT,
     STATE_UNAVAILABLE,
+    STATE_UNKNOWN,
 )
 from homeassistant.core import HomeAssistant, State
 from homeassistant.helpers import entity_registry as er
@@ -250,6 +252,28 @@ async def test_last_event_sensor(
     assert last.attributes["severity"] == "Warning"
     assert last.attributes["memory"] == "User"
     assert last.attributes["oldest_event_start"] == "2024-05-01T06:07:08"
+
+
+async def test_cleared_event_log_is_unknown_not_unavailable(
+    hass: HomeAssistant,
+    init_integration: MockConfigEntry,
+    fake_device: FakeDevice,
+    freezer: FrozenDateTimeFactory,
+) -> None:
+    """Clearing the inverter's event memory is an answer, not a failure to reach it."""
+    cleared = re.sub(
+        r"<Events>.*</Events>",
+        "<Events></Events>",
+        fixture("all_active.xml"),
+        flags=re.DOTALL,
+    )
+    fake_device.set("all.xml", cleared)
+
+    await _advance(hass, freezer)
+
+    assert hass.states.get(f"{PREFIX}last_event").state == STATE_UNKNOWN
+    # The rest of the poll is fine, so nothing else may be affected.
+    assert hass.states.get(f"{PREFIX}ac_power").state == "342.0"
 
 
 async def test_unique_ids_are_serial_based(
